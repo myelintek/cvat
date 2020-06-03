@@ -61,6 +61,7 @@ services:
 
   cvat_ui:
     container_name: cvat_ui
+    image: cvat_ui
     restart: always
     build:
       context: .
