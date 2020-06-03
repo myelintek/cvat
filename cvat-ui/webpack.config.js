@@ -9,7 +9,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-
+const publicPath = '__MLS_CVAT_BASE_URL__/';
 module.exports = {
     target: 'web',
     mode: 'production',
@@ -78,7 +78,7 @@ module.exports = {
             use: {
                 loader: 'worker-loader',
                 options: {
-                    publicPath: '/',
+                    publicPath: publicPath,
                     name: '3rdparty/[name].js',
                 },
             },
@@ -88,7 +88,7 @@ module.exports = {
             use: {
                 loader: 'worker-loader',
                 options: {
-                    publicPath: '/',
+                    publicPath: publicPath,
                     name: '[name].js',
                 },
             },
@@ -97,6 +97,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: "./src/index.html",
+            templateParameters: {
+                publicPath: publicPath,
+            },
             inject: false,
         }),
         new Dotenv({
