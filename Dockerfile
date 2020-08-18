@@ -137,6 +137,7 @@ COPY cvat-data/ ${HOME}/cvat-data
 COPY tests ${HOME}/tests
 COPY datumaro/ ${HOME}/datumaro
 COPY patch_cvat.sh ${HOME}/
+COPY create_cvat_admin.sh ${HOME}/
 
 RUN python3 -m pip install --no-cache-dir -r ${HOME}/datumaro/requirements.txt
 
