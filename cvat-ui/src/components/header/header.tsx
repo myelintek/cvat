@@ -204,20 +204,6 @@ function HeaderContainer(props: Props): JSX.Element {
                     onClick={
                         (): void => {
                             // false positive
-                            // eslint-disable-next-line security/detect-non-literal-fs-filename
-                            window.open(GITHUB_URL, '_blank');
-                        }
-                    }
-                >
-                    <Icon type='github' />
-                    <Text className='cvat-text-color'>GitHub</Text>
-                </Button>
-                <Button
-                    className='cvat-header-button'
-                    type='link'
-                    onClick={
-                        (): void => {
-                            // false positive
                             // eslint-disable-next-line
                             window.open(`${serverHost}/documentation/user_guide.html`, '_blank')
                         }
