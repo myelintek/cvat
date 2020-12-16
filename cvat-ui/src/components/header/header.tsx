@@ -137,10 +137,6 @@ function HeaderContainer(props: Props): JSX.Element {
                 <Icon type='setting' />
                 Settings
             </Menu.Item>
-            <Menu.Item onClick={() => aboutModal()}>
-                <Icon type='info-circle' />
-                About
-            </Menu.Item>
             <Menu.Item
                 onClick={onLogout}
                 disabled={logoutFetching}
