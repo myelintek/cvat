@@ -9,6 +9,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const publicPath = '__MLS_CVAT_BASE_URL__/';
 
 module.exports = {
     target: 'web',
@@ -20,7 +21,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[contenthash].min.js',
-        publicPath: '/',
+        publicPath: publicPath,
     },
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
@@ -81,7 +82,7 @@ module.exports = {
             use: {
                 loader: 'worker-loader',
                 options: {
-                    publicPath: '/',
+                    publicPath: publicPath,
                     name: '3rdparty/[name].[contenthash].js',
                 },
             },
@@ -91,7 +92,7 @@ module.exports = {
             use: {
                 loader: 'worker-loader',
                 options: {
-                    publicPath: '/',
+                    publicPath: publicPath,
                     name: '[name].[contenthash].js',
                 },
             },

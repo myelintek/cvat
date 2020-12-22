@@ -14,6 +14,9 @@ ENV TERM=xterm \
     socks_proxy=${socks_proxy} \
     LANG='C.UTF-8'  \
     LC_ALL='C.UTF-8'
+ENV REACT_APP_API_URL=__MLS_CVAT_BASE_URL__
+ENV MLSTEAM_CVAT_BASE_URL=''
+
 
 # Install dependencies
 COPY cvat-core/package*.json /tmp/cvat-core/
@@ -51,3 +54,4 @@ FROM nginx:stable-alpine
 RUN sed -i "s/}/application\/wasm wasm;\n}/g" /etc/nginx/mime.types
 COPY cvat-ui/react_nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=cvat-ui /tmp/cvat-ui/dist /usr/share/nginx/html/
+COPY patch_cvat_ui.sh /usr/share/nginx/html/

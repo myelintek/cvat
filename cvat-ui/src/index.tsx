@@ -136,7 +136,7 @@ const ReduxAppWrapper = connect(
 ReactDOM.render(
     (
         <Provider store={cvatStore}>
-            <BrowserRouter>
+            <BrowserRouter basename="__MLS_CVAT_BASE_URL__">
                 <ReduxAppWrapper />
             </BrowserRouter>
         </Provider>
