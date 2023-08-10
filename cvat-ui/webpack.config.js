@@ -11,6 +11,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const publicPath = '__MLS_CVAT_BASE_URL__'
 
 module.exports = (env) => {
     const defaultAppConfig = path.join(__dirname, 'src/config.tsx');
@@ -43,7 +44,7 @@ module.exports = (env) => {
         output: {
             path: path.resolve(__dirname, 'dist'),
             filename: 'assets/[name].[contenthash].min.js',
-            publicPath: '/',
+            publicPath: publicPath,
         },
         devServer: {
             compress: false,
@@ -152,7 +153,7 @@ module.exports = (env) => {
                     use: {
                         loader: 'worker-loader',
                         options: {
-                            publicPath: '/',
+                            publicPath: publicPath,
                             filename: 'assets/3rdparty/[name].[contenthash].js',
                             esModule: false,
                         },
@@ -164,7 +165,7 @@ module.exports = (env) => {
                     use: {
                         loader: 'worker-loader',
                         options: {
-                            publicPath: '/',
+                            publicPath: publicPath,
                             filename: 'assets/[name].[contenthash].js',
                             esModule: false,
                         },

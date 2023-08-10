@@ -45,6 +45,7 @@ services:
       CLICKHOUSE_HOST: clickhouse
       CVAT_ANALYTICS: 1
       CVAT_BASE_URL:
+      MLSTEAM_CVAT_BASE_URL: "/annotator/cvat1"
     command: -c supervisord/server.conf
     labels:
       - traefik.enable=true
@@ -200,16 +201,16 @@ services:
       - '--entryPoints.web.address=:8080'
       - '--providers.file.directory=/etc/traefik/rules'
     # Uncomment to get Traefik dashboard
-    #   - "--entryPoints.dashboard.address=:8090"
-    #   - "--api.dashboard=true"
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.http.routers.dashboard.entrypoints=dashboard
-    #   - traefik.http.routers.dashboard.service=api@internal
-    #   - traefik.http.routers.dashboard.rule=Host(`${CVAT_HOST:-localhost}`)
+      - "--entryPoints.dashboard.address=:8090"
+      - "--api.dashboard=true"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard.entrypoints=dashboard
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.rule=Host(`${CVAT_HOST:-localhost}`)
     ports:
-      - 8080:8080
-      - 8090:8090
+      - 18080:8080
+      - 18090:8090
     environment:
       CVAT_HOST: ${CVAT_HOST:-localhost}
       DJANGO_LOG_VIEWER_HOST: grafana

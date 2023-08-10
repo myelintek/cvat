@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  cvat_server:
+    environment:
+      DJANGO_SETTINGS_MODULE: settings
+    volumes:
+      - ./settings.py:/home/django/settings.py:ro
+  cvat_ui:
+    environment:
+      MLSTEAM_CVAT_BASE_URL: '/annotator/cvat1'
+    command: /bin/sh -c "/bin/sh /usr/local/bin/patch_cvat_ui.sh && nginx -g 'daemon off;'"
