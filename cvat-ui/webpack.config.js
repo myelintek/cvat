@@ -12,6 +12,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const prefixUrl = '__PREFIX_URL__';
 
 module.exports = (env) => {
     const defaultAppConfig = path.join(__dirname, 'src/config.tsx');
@@ -45,7 +46,7 @@ module.exports = (env) => {
         output: {
             path: path.resolve(__dirname, 'dist'),
             filename: 'assets/[name].[contenthash].min.js',
-            publicPath: '/',
+            publicPath: prefixUrl,
         },
         devServer: {
             compress: false,
@@ -166,7 +167,7 @@ module.exports = (env) => {
                     use: {
                         loader: 'worker-loader',
                         options: {
-                            publicPath: '/',
+                            publicPath: prefixUrl,
                             filename: 'assets/3rdparty/[name].[contenthash].js',
                             esModule: false,
                         },
@@ -178,7 +179,7 @@ module.exports = (env) => {
                     use: {
                         loader: 'worker-loader',
                         options: {
-                            publicPath: '/',
+                            publicPath: prefixUrl,
                             filename: 'assets/[name].[contenthash].js',
                             esModule: false,
                         },

@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 const config = {
-    backendAPI: '/api',
+    backendAPI: '__PREFIX_URL__/api',
     organization: {
         organizationID: null,
         organizationSlug: null,

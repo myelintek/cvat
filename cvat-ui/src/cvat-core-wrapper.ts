@@ -35,7 +35,7 @@ import { APIWrapperEnterOptions } from 'cvat-core/src/plugins';
 
 const cvat: any = _cvat;
 
-cvat.config.backendAPI = '/api';
+cvat.config.backendAPI = '__PREFIX_URL__/api';
 cvat.config.origin = window.location.origin;
 // Set the TUS chunk size to 2 MB. A small value works better in case of a slow internet connection.
 // A larger value may cause a server-side timeout errors in the current implementation.

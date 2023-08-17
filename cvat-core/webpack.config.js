@@ -6,6 +6,7 @@
     __dirname:true
 */
 
+const prefixUrl = '__PREFIX_URL__';
 const path = require('path');
 
 const nodeConfig = {
@@ -83,7 +84,8 @@ const webConfig = {
                 use: {
                     loader: 'worker-loader',
                     options: {
-                        publicPath: '/static/engine/js/3rdparty/',
+                        publicPath: prefixUrl + '/static/engine/js/3rdparty/',
+prefixUrl
                         filename: '[name].[contenthash].js',
                         esModule: false,
                     },
@@ -95,7 +97,7 @@ const webConfig = {
                 use: {
                     loader: 'worker-loader',
                     options: {
-                        publicPath: '/static/engine/js/',
+                        publicPath: prefixUrl + '/static/engine/js/',
                         filename: '[name].[contenthash].js',
                         esModule: false,
                     },

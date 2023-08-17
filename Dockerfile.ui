@@ -36,3 +36,6 @@ FROM nginx:mainline-alpine
 # Replace default.conf configuration to remove unnecessary rules
 COPY cvat-ui/react_nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=cvat-ui /tmp/cvat-ui/dist /usr/share/nginx/html/
+COPY patch_cvat_ui.sh /usr/local/bin/patch_cvat_ui.sh
+
+CMD ["/bin/sh", "-c", "/usr/local/bin/patch_cvat_ui.sh; nginx -g 'daemon off;'"]
