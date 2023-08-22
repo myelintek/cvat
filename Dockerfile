@@ -189,6 +189,7 @@ COPY --chown=${USER} wait-for-it.sh manage.py backend_entrypoint.sh ${HOME}/
 COPY --chown=${USER} utils/ ${HOME}/utils
 COPY --chown=${USER} cvat/ ${HOME}/cvat
 COPY --chown=${USER} rqscheduler.py ${HOME}
+COPY --chown=${USER} create_cvat_admin.sh ${HOME}
 
 ARG COVERAGE_PROCESS_START
 RUN if [ "${COVERAGE_PROCESS_START}" ]; then \
