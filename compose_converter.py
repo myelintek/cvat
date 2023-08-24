@@ -36,7 +36,22 @@ for (name, service) in compose_file_data['services'].items():
 
                 envs_result.update({env_key: env_value})
             compose_file_data['services'][name]['environment'] = envs_result
-            print("envs:{}".format(envs_result))
+    if name == "cvat_server":
+        labels = []
+        for label in service.get('labels'):
+            if 'traefik.http.routers.cvat.rule' in label:
+                print("yes")
+                label = 'traefik.http.routers.cvat.rule=Host(`${CVAT_HOST:-localhost}`, `${CVAT_UUID}-traefik`) && PathPrefix(`/api/`, `/git/`, `/opencv/`, `/static/`, `/admin`, `/documentation/`, `/django-rq`)'
+            labels.append(label)
+        compose_file_data['services'][name]['labels'] = labels
+    if name == "traefik":
+        volumes = []
+        for vol in service.get('volumes'):
+            if 'grafana_conf' in vol:
+                continue
+            volumes.append(vol)
+        compose_file_data['services'][name]['volumes'] = volumes
+
 
 # remove volumes section
 del compose_file_data['volumes']
@@ -67,6 +82,13 @@ if compose_file_data['services'].get('cvat_worker_analytics_reports'):
 del compose_file_data['services']['cvat_vector']
 del compose_file_data['services']['cvat_clickhouse']
 del compose_file_data['services']['traefik']['ports']
+# chagne to myelintek/cvat-server:v2.6.0, myelintek/cvat-ui:v2.6.0
+compose_file_data['services']['cvat_server']['image'] = 'myelintek/cvat-server:${CVAT_VERSION:-v2.6.0}'
+compose_file_data['services']['cvat_ui']['image'] = 'myelintek/cvat-ui:${CVAT_VERSION:-v2.6.0}'
+compose_file_data['services']['cvat_server']['healthcheck'] = {
+    'test': ['CMD-SHELL', 'python manage.py health_check || exit 1'],
+    'start_period': '30s'
+}
 
 with open('docker-compose-result.yml', 'wt') as f:
     yaml.dump(compose_file_data, f, Dumper=IndentDumper, sort_keys=False, allow_unicode=True)
