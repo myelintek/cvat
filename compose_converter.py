@@ -3,16 +3,22 @@
 # used by MLSteam annotations
 #
 
-import yaml
-from yaml import safe_dump, safe_load
+from ruamel.yaml import YAML
+yaml = YAML()
+yaml.indent(mapping=2, sequence=4, offset=2)
+yaml.preserve_quotes = True
 
-class IndentDumper(yaml.Dumper):
-    def increase_indent(self, flow=False, indentless=False):
-        return super(IndentDumper, self).increase_indent(flow, False)
+#import yaml
+#from yaml import safe_dump, safe_load
+
+#class IndentDumper(yaml.Dumper):
+#    def increase_indent(self, flow=False, indentless=False):
+#        return super(IndentDumper, self).increase_indent(flow, False)
 
 
 with open("docker-compose.yml", 'rt') as f:
-    compose_file_data = safe_load(f)
+    compose_file_data = yaml.load(f)
+    # compose_file_data = safe_load(f)
 
 for (name, service) in compose_file_data['services'].items():
     cn = service['container_name']
@@ -71,6 +77,7 @@ if not envs:
 envs.update({
     'PREFIX_URL': '${CVAT_BASE_URL}'
 })
+envs.pop('CVAT_BASE_URL')
 compose_file_data['services']['cvat_server']['environment'] = envs
 # delete CVAT_BASE_URL env
 #del compose_file_data['services']['cvat_server']['environment']['CVAT_BASE_URL']
@@ -91,5 +98,6 @@ compose_file_data['services']['cvat_server']['healthcheck'] = {
 }
 
 with open('docker-compose-result.yml', 'wt') as f:
-    yaml.dump(compose_file_data, f, Dumper=IndentDumper, sort_keys=False, allow_unicode=True)
+    #yaml.dump(compose_file_data, f, Dumper=IndentDumper, sort_keys=False, allow_unicode=True, default_flow_style=False)
+    yaml.dump(compose_file_data, f)
 
