@@ -12,7 +12,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const CopyPlugin = require('copy-webpack-plugin');
-const prefixUrl = '__PREFIX_URL__';
+const prefixUrl = '__PREFIX_URL__/';
 
 module.exports = (env) => {
     const defaultAppConfig = path.join(__dirname, 'src/config.tsx');

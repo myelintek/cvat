@@ -107,7 +107,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
             name: server.name as string,
             description: server.description as string,
             server: {
-                host: core.config.backendAPI.slice(0, -7),
+                host: core.config.backendAPI.slice(0, -4),
                 version: server.version as string,
             },
             canvas: {

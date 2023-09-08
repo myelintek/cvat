@@ -10,7 +10,7 @@ import IntelligentScissorsImplementation, { IntelligentScissors } from './intell
 import { OpenCVTracker } from './opencv-interfaces';
 
 const core = getCore();
-const baseURL = core.config.backendAPI.slice(0, -7);
+const baseURL = core.config.backendAPI.slice(0, -4);
 
 export interface Segmentation {
     intelligentScissorsFactory: (onChangeToolsBlockerState:(event:string)=>void) => IntelligentScissors;

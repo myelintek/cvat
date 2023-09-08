@@ -6,7 +6,7 @@
 import { getCore } from 'cvat-core-wrapper';
 
 const core = getCore();
-const baseURL = core.config.backendAPI.slice(0, -7);
+const baseURL = core.config.backendAPI.slice(0, -4);
 
 interface GitPlugin {
     name: string;
