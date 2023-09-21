@@ -55,72 +55,57 @@ class LambdaType(Enum):
         return self.value
 
 class LambdaGateway:
-    NUCLIO_ROOT_URL = '/api/functions'
+    MLSTEAM_API_ENDPOINT = os.environ['MLSTEAM_API_ENDPOINT']  # http(s)://host:port
+    MLSTEAM_API_TOKEN = os.environ['MLSTEAM_API_TOKEN']
+    MLSTEAM_PROJECT_UUID = os.environ['MLSTEAM_PROJECT_UUID']
+    MLSTEAM_CVAT_UUID = os.environ['MLSTEAM_CVAT_UUID']
+    MLSTEAM_API_TIMEOUT = 120
+    MLSTEAM_API_ROOT = f'{MLSTEAM_API_ENDPOINT}/api/v2/projects/{MLSTEAM_PROJECT_UUID}' \
+                       f'/auto_label/cvat/{MLSTEAM_CVAT_UUID}'
+    MLSTEAM_AUTH_HEADER = {'Authorization': f'Bearer {MLSTEAM_API_TOKEN}'}
 
-    def _http(self, method="get", scheme=None, host=None, port=None,
-        function_namespace=None, url=None, headers=None, data=None):
-        NUCLIO_GATEWAY = '{}://{}:{}'.format(
-            scheme or settings.NUCLIO['SCHEME'],
-            host or settings.NUCLIO['HOST'],
-            port or settings.NUCLIO['PORT'])
-        NUCLIO_FUNCTION_NAMESPACE = function_namespace or settings.NUCLIO['FUNCTION_NAMESPACE']
-        extra_headers = {
-            'x-nuclio-project-name': 'cvat',
-            'x-nuclio-function-namespace': NUCLIO_FUNCTION_NAMESPACE,
-            'x-nuclio-invoke-via': 'domain-name',
-        }
-        if headers:
-            extra_headers.update(headers)
-        NUCLIO_TIMEOUT = settings.NUCLIO['DEFAULT_TIMEOUT']
-
-        if url:
-            url = "{}{}".format(NUCLIO_GATEWAY, url)
-        else:
-            url = NUCLIO_GATEWAY
-
-        with make_requests_session() as session:
-            reply = session.request(method, url, headers=extra_headers,
-                timeout=NUCLIO_TIMEOUT, json=data)
-            reply.raise_for_status()
-            response = reply.json()
-
-        return response
+    def _make_requests_session(self) -> requests.Session:
+        session = make_requests_session()
+        session.headers.update(self.MLSTEAM_AUTH_HEADER)
+        session.verify = False
+        return session
 
     def list(self):
-        data = self._http(url=self.NUCLIO_ROOT_URL)
-        response = [LambdaFunction(self, item) for item in data.values()]
+        print('🤔 LambdaGateway.list', flush=True)
+        with self._make_requests_session() as session:
+            rsp = session.get(self.MLSTEAM_API_ROOT,
+                              timeout=self.MLSTEAM_API_TIMEOUT)
+            rsp.raise_for_status()
+            data = rsp.json()
+        response = [LambdaFunction(self, item) for item in data]
         return response
 
     def get(self, func_id):
-        data = self._http(url=self.NUCLIO_ROOT_URL + '/' + func_id)
+        print(f'🤔 LambdaGateway.get: func_id={func_id}', flush=True)
+        with self._make_requests_session() as session:
+            rsp = session.get(f'{self.MLSTEAM_API_ROOT}/{func_id}',
+                              timeout=self.MLSTEAM_API_TIMEOUT)
+            rsp.raise_for_status()
+            data = rsp.json()
         response = LambdaFunction(self, data)
         return response
 
     def invoke(self, func, payload):
-        invoke_method = {
-            'dashboard': self._invoke_via_dashboard,
-            'direct': self._invoke_directly,
-        }
-
-        return invoke_method[settings.NUCLIO['INVOKE_METHOD']](func, payload)
-
-    def _invoke_via_dashboard(self, func, payload):
-        return self._http(method="post", url='/api/function_invocations',
-            data=payload, headers={
-                'x-nuclio-function-name': func.id,
-                'x-nuclio-path': '/'
-            })
+        print(f'🤔 LambdaGateway.invoke: func={func}', flush=True)
+        return self._invoke_directly(func, payload)
 
     def _invoke_directly(self, func, payload):
         # host.docker.internal for Linux will work only with Docker 20.10+
-        NUCLIO_TIMEOUT = settings.NUCLIO['DEFAULT_TIMEOUT']
         if os.path.exists('/.dockerenv'): # inside a docker container
-            url = f'http://host.docker.internal:{func.port}'
+            url = f'http://host.docker.internal:{func.port}/invoke'
         else:
-            url = f'http://localhost:{func.port}'
+            url = f'http://localhost:{func.port}/invoke'
+
+        if func.prefix:
+            url = f'{url}/{func.prefix}'
 
         with make_requests_session() as session:
-            reply = session.post(url, timeout=NUCLIO_TIMEOUT, json=payload)
+            reply = session.post(url, timeout=self.MLSTEAM_API_TIMEOUT, json=payload)
             reply.raise_for_status()
             response = reply.json()
 
@@ -168,6 +153,7 @@ class LambdaFunction:
         self.animated_gif = meta_anno.get('animated_gif', '')
         self.version = int(meta_anno.get('version', '1'))
         self.help_message = meta_anno.get('help_message', '')
+        self.prefix = meta_anno.get('perfix')
         self.gateway = gateway
 
     def to_dict(self):
