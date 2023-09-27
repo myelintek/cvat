@@ -73,7 +73,7 @@ class LambdaGateway:
     def list(self):
         print('🤔 LambdaGateway.list', flush=True)
         with self._make_requests_session() as session:
-            rsp = session.get(self.MLSTEAM_API_ROOT,
+            rsp = session.get(f'{self.MLSTEAM_API_ROOT}/endpoints',
                               timeout=self.MLSTEAM_API_TIMEOUT)
             rsp.raise_for_status()
             data = rsp.json()
@@ -83,7 +83,7 @@ class LambdaGateway:
     def get(self, func_id):
         print(f'🤔 LambdaGateway.get: func_id={func_id}', flush=True)
         with self._make_requests_session() as session:
-            rsp = session.get(f'{self.MLSTEAM_API_ROOT}/{func_id}',
+            rsp = session.get(f'{self.MLSTEAM_API_ROOT}/endpoints/{func_id}',
                               timeout=self.MLSTEAM_API_TIMEOUT)
             rsp.raise_for_status()
             data = rsp.json()
