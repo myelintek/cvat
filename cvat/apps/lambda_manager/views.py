@@ -103,6 +103,7 @@ class LambdaGateway:
 
         if func.prefix:
             url = f'{url}/{func.prefix}'
+        print(f'🤔 prefix={func.prefix}, url={url}', flush=True)
 
         with make_requests_session() as session:
             reply = session.post(url, timeout=self.MLSTEAM_API_TIMEOUT, json=payload)
@@ -153,7 +154,7 @@ class LambdaFunction:
         self.animated_gif = meta_anno.get('animated_gif', '')
         self.version = int(meta_anno.get('version', '1'))
         self.help_message = meta_anno.get('help_message', '')
-        self.prefix = meta_anno.get('perfix')
+        self.prefix = data['metadata'].get('prefix')
         self.gateway = gateway
 
     def to_dict(self):
