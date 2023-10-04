@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-@import '../../base.scss';
+@import '../../base';
 
 .cvat-task-details-wrapper {
     overflow-y: auto;
@@ -62,39 +62,6 @@
         align-items: center;
         line-height: 14px;
     }
-}
-
-.cvat-dataset-repository-url {
-    > a {
-        margin-right: $grid-unit-size;
-    }
-
-    > .ant-typography {
-        > .ant-tag {
-            margin-left: $grid-unit-size;
-
-            > span[role='img'] {
-                margin-right: $grid-unit-size;
-            }
-        }
-
-        > .ant-tag-red {
-            user-select: none;
-            opacity: 0.4;
-
-            &:hover {
-                opacity: 0.8;
-            }
-
-            &:active {
-                opacity: 1;
-            }
-        }
-    }
-}
-
-.cvat-repository-format-select {
-    width: 100%;
 }
 
 .cvat-task-page {

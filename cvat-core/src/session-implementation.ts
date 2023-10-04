@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 import { ArgumentError } from './exceptions';
-import { HistoryActions, JobType } from './enums';
+import { HistoryActions, JobType, RQStatus } from './enums';
 import { Storage } from './storage';
 import { Task as TaskClass, Job as JobClass } from './session';
 import loggerStorage from './logger-storage';
@@ -70,9 +70,21 @@ export function implementJob(Job) {
                 jobData.assignee = jobData.assignee.id;
             }
 
-            const data = await serverProxy.jobs.save(this.id, jobData);
-            this._updateTrigger.reset();
-            return new Job(data);
+            let updatedJob = null;
+            try {
+                const data = await serverProxy.jobs.save(this.id, jobData);
+                updatedJob = new Job(data);
+                this._updateTrigger.reset();
+            } catch (error) {
+                updatedJob = new Job(this._initialData);
+                throw error;
+            } finally {
+                this.stage = updatedJob.stage;
+                this.state = updatedJob.state;
+                this.assignee = updatedJob.assignee;
+            }
+
+            return this;
         }
 
         const jobSpec = {
@@ -521,6 +533,17 @@ export function implementTask(Task) {
             jobs: jobs.results,
             labels: labels.results,
         });
+    };
+
+    Task.prototype.listenToCreate.implementation = async function (
+        onUpdate: (state: RQStatus, progress: number, message: string) => void = () => {},
+    ): Promise<TaskClass> {
+        if (Number.isInteger(this.id) && this.size === 0) {
+            const serializedTask = await serverProxy.tasks.listenToCreate(this.id, onUpdate);
+            return new Task(serializedTask);
+        }
+
+        return this;
     };
 
     Task.prototype.delete.implementation = async function () {

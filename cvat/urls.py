@@ -28,9 +28,6 @@ urlpatterns = [
     path('django-rq/', include('django_rq.urls')),
 ]
 
-if apps.is_installed('cvat.apps.dataset_repo'):
-    urlpatterns.append(path('git/repository/', include('cvat.apps.dataset_repo.urls')))
-
 if apps.is_installed('cvat.apps.log_viewer'):
     urlpatterns.append(path('', include('cvat.apps.log_viewer.urls')))
 
@@ -39,9 +36,6 @@ if apps.is_installed('cvat.apps.events'):
 
 if apps.is_installed('cvat.apps.lambda_manager'):
     urlpatterns.append(path('', include('cvat.apps.lambda_manager.urls')))
-
-if apps.is_installed('cvat.apps.opencv'):
-    urlpatterns.append(path('opencv/', include('cvat.apps.opencv.urls')))
 
 if apps.is_installed('cvat.apps.webhooks'):
     urlpatterns.append(path('api/', include('cvat.apps.webhooks.urls')))

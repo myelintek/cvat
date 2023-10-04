@@ -6,11 +6,13 @@
 import { Canvas3d } from 'cvat-canvas3d/src/typescript/canvas3d';
 import { Canvas, RectDrawingMethod, CuboidDrawingMethod } from 'cvat-canvas-wrapper';
 import {
-    Webhook, MLModel, ModelProvider, Organization, QualityReport, QualityConflict, QualitySettings, FramesMetaData,
+    Webhook, MLModel, ModelProvider, Organization,
+    QualityReport, QualityConflict, QualitySettings, FramesMetaData, RQStatus,
 } from 'cvat-core-wrapper';
 import { IntelligentScissors } from 'utils/opencv-wrapper/intelligent-scissors';
 import { KeyMap } from 'utils/mousetrap-react';
 import { OpenCVTracker } from 'utils/opencv-wrapper/opencv-interfaces';
+import { ImageFilter } from 'utils/image-processing';
 
 export type StringObject = {
     [index: string]: string;
@@ -103,7 +105,6 @@ export interface JobsState {
 export interface TasksState {
     initialized: boolean;
     fetching: boolean;
-    hideEmpty: boolean;
     moveTask: {
         modalVisible: boolean;
         taskId: number | null;
@@ -259,7 +260,6 @@ export interface CloudStoragesState {
 }
 
 export enum SupportedPlugins {
-    GIT_INTEGRATION = 'GIT_INTEGRATION',
     ANALYTICS = 'ANALYTICS',
     MODELS = 'MODELS',
 }
@@ -374,20 +374,6 @@ export enum TaskStatus {
     COMPLETED = 'completed',
 }
 
-export enum JobStage {
-    ANNOTATION = 'annotation',
-    REVIEW = 'validation',
-    ACCEPTANCE = 'acceptance',
-}
-
-export enum RQStatus {
-    unknown = 'unknown',
-    queued = 'queued',
-    started = 'started',
-    finished = 'finished',
-    failed = 'failed',
-}
-
 export interface ActiveInference {
     status: RQStatus;
     progress: number;
@@ -423,7 +409,8 @@ export interface ModelsState {
 
 export interface ErrorState {
     message: string;
-    reason: string;
+    reason: Error;
+    shouldLog?: boolean;
     className?: string;
 }
 
@@ -834,6 +821,7 @@ export interface SettingsState {
     shapes: ShapesSettingsState;
     workspace: WorkspaceSettingsState;
     player: PlayerSettingsState;
+    imageFilters: ImageFilter[];
     showDialog: boolean;
 }
 
@@ -874,7 +862,6 @@ export interface OrganizationState {
     current?: Organization | null;
     initialized: boolean;
     fetching: boolean;
-    creating: boolean;
     updating: boolean;
     inviting: boolean;
     leaving: boolean;

@@ -6,7 +6,7 @@
 import _ from 'lodash';
 import {
     ChunkType, DimensionType, JobStage,
-    JobState, JobType, StorageLocation, TaskMode, TaskStatus,
+    JobState, JobType, RQStatus, StorageLocation, TaskMode, TaskStatus,
 } from './enums';
 import { Storage } from './storage';
 
@@ -317,7 +317,7 @@ function buildDuplicatedAPI(prototype) {
 export class Session {}
 
 export class Job extends Session {
-    public assignee: User;
+    public assignee: User | null;
     public stage: JobStage;
     public state: JobState;
     public readonly id: number;
@@ -381,7 +381,7 @@ export class Job extends Session {
         log: CallableFunction;
     };
 
-    constructor(initialData: SerializedJob) {
+    constructor(initialData: Readonly<SerializedJob>) {
         super();
         const data = {
             id: undefined,
@@ -535,6 +535,9 @@ export class Job extends Session {
                 },
                 _updateTrigger: {
                     get: () => updateTrigger,
+                },
+                _initialData: {
+                    get: () => initialData,
                 },
             }),
         );
@@ -757,6 +760,11 @@ export class Task extends Session {
         data.progress = {
             completedJobs: initialData?.jobs?.completed || 0,
             totalJobs: initialData?.jobs?.count || 0,
+            validationJobs: initialData?.jobs?.validation || 0,
+            annotationJobs:
+                (initialData?.jobs?.count || 0) -
+                (initialData?.jobs?.validation || 0) -
+                (initialData?.jobs?.completed || 0),
         };
 
         data.files = Object.freeze({
@@ -1121,6 +1129,13 @@ export class Task extends Session {
 
     async save(onUpdate = () => {}): Promise<Task> {
         const result = await PluginRegistry.apiWrapper.call(this, Task.prototype.save, onUpdate);
+        return result;
+    }
+
+    async listenToCreate(
+        onUpdate: (state: RQStatus, progress: number, message: string) => void = () => {},
+    ): Promise<Task> {
+        const result = await PluginRegistry.apiWrapper.call(this, Task.prototype.listenToCreate, onUpdate);
         return result;
     }
 
