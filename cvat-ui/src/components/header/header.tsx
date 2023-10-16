@@ -86,23 +86,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
 
     return {
         user,
-        tool: {
-            name: server.name as string,
-            description: server.description as string,
-            server: {
-                host: core.config.backendAPI.slice(0, -4),
-                version: server.version as string,
-            },
-            canvas: {
-                version: packageVersion.canvas,
-            },
-            core: {
-                version: packageVersion.core,
-            },
-            ui: {
-                version: packageVersion.ui,
-            },
-        },
+        about,
         switchSettingsShortcut: normalizedKeyMap.SWITCH_SETTINGS,
         keyMap,
         settingsModalVisible,
