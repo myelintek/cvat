@@ -127,6 +127,7 @@ RUN apt-get update && \
         python3-venv \
         supervisor \
         tzdata \
+        gettext \
     && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/lib/apt/lists/* && \
@@ -174,7 +175,9 @@ RUN if [ "${CVAT_DEBUG_ENABLED}" = 'yes' ]; then \
     fi
 
 # Install and initialize CVAT, copy all necessary files
-COPY cvat/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=${USER} cvat/nginx.conf /etc/nginx/nginx.conf
+COPY cvat/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY cvat/20-envsubst-on-templates.sh /etc/cvat/init.d/20-envsubst-on-templates.sh
 COPY --chown=${USER} components /tmp/components
 COPY --chown=${USER} supervisord/ ${HOME}/supervisord
 COPY --chown=${USER} wait-for-it.sh manage.py backend_entrypoint.sh ${HOME}/
