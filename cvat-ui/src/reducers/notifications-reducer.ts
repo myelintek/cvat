@@ -391,7 +391,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         dataset: {
                             message:
                                 'Could not export dataset for the ' +
-                                `[${instanceType} ${instance.id}](/${instanceType}s/${instance.id})`,
+                                `[${instanceType} ${instance.id}](__PREFIX_URL__/${instanceType}s/${instance.id})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                         },
@@ -456,8 +456,8 @@ export default function (state = defaultState, action: AnyAction): Notifications
             const { instance, resource } = action.payload;
             const message = resource === 'annotation' ?
                 'Annotations have been loaded to the ' +
-                `[task ${instance.taskId || instance.id}](/tasks/${instance.taskId || instance.id}) ` :
-                `Dataset was imported to the [project ${instance.id}](/projects/${instance.id})`;
+                `[task ${instance.taskId || instance.id}](__PREFIX_URL__/tasks/${instance.taskId || instance.id}) ` :
+                `Dataset was imported to the [project ${instance.id}](__PREFIX_URL__/projects/${instance.id})`;
             return {
                 ...state,
                 messages: {
@@ -473,8 +473,8 @@ export default function (state = defaultState, action: AnyAction): Notifications
             const { instance, resource } = action.payload;
             const message = resource === 'annotation' ?
                 'Could not upload annotation for the ' +
-                `[task ${instance.taskId || instance.id}](/tasks/${instance.taskId || instance.id})` :
-                `Could not import dataset to the [project ${instance.id}](/projects/${instance.id})`;
+                `[task ${instance.taskId || instance.id}](__PREFIX_URL__/tasks/${instance.taskId || instance.id})` :
+                `Could not import dataset to the [project ${instance.id}](__PREFIX_URL__/projects/${instance.id})`;
             return {
                 ...state,
                 errors: {
@@ -502,7 +502,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         ...state.messages.importing,
                         backup:
                             `The ${instanceType} has been restored successfully.
-                            Click [here](/${instanceType}s/${instanceId}) to open`,
+                            Click [here](__PREFIX_URL__/${instanceType}s/${instanceId}) to open`,
                     },
                 },
             };
@@ -550,7 +550,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     tasks: {
                         ...state.errors.tasks,
                         deleting: {
-                            message: `Could not delete the [task ${taskID}](/tasks/${taskID})`,
+                            message: `Could not delete the [task ${taskID}](__PREFIX_URL__/tasks/${taskID})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                             className: 'cvat-notification-notice-delete-task-failed',
@@ -618,7 +618,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     projects: {
                         ...state.errors.projects,
                         updating: {
-                            message: `Could not delete [project ${projectId}](/project/${projectId})`,
+                            message: `Could not delete [project ${projectId}](__PREFIX_URL__/project/${projectId})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                             className: 'cvat-notification-notice-delete-project-failed',
@@ -669,7 +669,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         models: {
                             ...state.messages.models,
                             inferenceDone: 'Automatic annotation accomplished for the ' +
-                                `[task ${taskID}](/tasks/${taskID})`,
+                                `[task ${taskID}](__PREFIX_URL__/tasks/${taskID})`,
                         },
                     },
                 };
@@ -708,7 +708,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     models: {
                         ...state.errors.models,
                         inferenceStatusFetching: {
-                            message: `Fetching inference status for the [task ${taskID}](/tasks/${taskID})`,
+                            message: `Fetching inference status for the [task ${taskID}](__PREFIX_URL__/tasks/${taskID})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                         },
@@ -741,7 +741,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     models: {
                         ...state.errors.models,
                         starting: {
-                            message: `Could not infer model for the [task ${taskID}](/tasks/${taskID})`,
+                            message: `Could not infer model for the [task ${taskID}](__PREFIX_URL__/tasks/${taskID})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                         },
@@ -758,7 +758,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                     models: {
                         ...state.errors.models,
                         canceling: {
-                            message: `Could not cancel model inference for the [task ${taskID}](/tasks/${taskID})`,
+                            message: `Could not cancel model inference for the [task ${taskID}](__PREFIX_URL__/tasks/${taskID})`,
                             reason: action.payload.error,
                             shouldLog: !(action.payload.error instanceof ServerError),
                         },
@@ -995,7 +995,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         ...state.errors.annotation,
                         uploadAnnotations: {
                             message:
-                                `Could not upload annotations for the [job ${jobID}](/tasks/${taskID}/jobs/${jobID})`,
+                                `Could not upload annotations for the [job ${jobID}](__PREFIX_URL__/tasks/${taskID}/jobs/${jobID})`,
                             reason: error.toString(),
                             className: 'cvat-notification-notice-upload-annotations-fail',
                         },
