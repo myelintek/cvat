@@ -229,8 +229,8 @@ function HeaderComponent(props: Props): JSX.Element {
 
     const resetOrganization = (): void => {
         localStorage.removeItem('currentOrganization');
-        if (/(webhooks)|(\d+)/.test(window.location.pathname)) {
-            window.location.pathname = '/';
+        if (/(webhooks)|(\d+)/.test(window.location.pathname.replace(new RegExp(String.raw`^__PREFIX_URL__`), ''))) {
+            window.location.pathname = '__PREFIX_URL__/';
         } else {
             window.location.reload();
         }
@@ -239,9 +239,9 @@ function HeaderComponent(props: Props): JSX.Element {
     const setNewOrganization = (organization: any): void => {
         if (!currentOrganization || currentOrganization.slug !== organization.slug) {
             localStorage.setItem('currentOrganization', organization.slug);
-            if (/\d+/.test(window.location.pathname)) {
+            if (/\d+/.test(window.location.pathname.replace(new RegExp(String.raw`^__PREFIX_URL__`), ''))) {
                 // a resource is opened (task/job/etc.)
-                window.location.pathname = '/';
+                window.location.pathname = '__PREFIX_URL__/';
             } else {
                 window.location.reload();
             }

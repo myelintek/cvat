@@ -110,7 +110,7 @@ function JobListComponent(props: Props): JSX.Element {
                                 let serialized = '';
                                 const [latestJob] = [...taskInstance.jobs].reverse();
                                 for (const job of taskInstance.jobs) {
-                                    const baseURL = window.location.origin;
+                                    const baseURL = window.location.origin + '__PREFIX_URL__';
                                     serialized += `Job #${job.id}`.padEnd(`${latestJob.id}`.length + 6, ' ');
                                     serialized += `: ${baseURL}/tasks/${taskInstance.id}/jobs/${job.id}`.padEnd(
                                         `${latestJob.id}`.length + baseURL.length + 8,
