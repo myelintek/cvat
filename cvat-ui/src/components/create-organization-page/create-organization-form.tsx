@@ -38,7 +38,7 @@ function CreateOrganizationForm(): JSX.Element {
         dispatch(
             createOrganizationAsync(rest, (createdSlug: string): void => {
                 localStorage.setItem('currentOrganization', createdSlug);
-                (window as Window).location = '/organization';
+                (window as Window).location = '__PREFIX_URL__/organization';
             }, () => setCreating(false)),
         );
     };
