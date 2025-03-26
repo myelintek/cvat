@@ -36,8 +36,8 @@ INCORRECT_EMAIL_CONFIRMATION_URL = '{}/auth/incorrect-email-confirmation'.format
 
 CORS_ORIGIN_WHITELIST = [UI_URL]
 CORS_REPLACE_HTTPS_REFERER = True
-IAM_OPA_HOST = 'http://localhost:8181'
-IAM_OPA_DATA_URL = f'{IAM_OPA_HOST}/v1/data'
+IAM_OPA_HOST = os.environ.get('IAM_OPA_HOST', 'localhost')
+IAM_OPA_DATA_URL = f'http://{IAM_OPA_HOST}:8181/v1/data'
 
 INSTALLED_APPS += [
     'silk'
