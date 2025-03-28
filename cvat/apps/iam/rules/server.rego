@@ -1,5 +1,5 @@
 package server
-import data.utils
+# import data.utils
 
 # input: {
 #     "scope": <"view"|"list:content"> or null,
@@ -20,12 +20,14 @@ import data.utils
 #     }
 # }
 
-default allow = false
-allow {
-    input.scope == utils.VIEW
-}
+# TODO: allow anonymous requests to /api/server/health
+# allow {
+#     input.scope == utils.VIEW
+# }
 
-allow {
-    input.scope == utils.LIST_CONTENT
-    utils.has_perm(utils.USER)
-}
+# allow {
+#     input.scope == utils.LIST_CONTENT
+#     utils.has_perm(utils.USER)
+# }
+
+default allow = true

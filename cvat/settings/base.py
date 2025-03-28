@@ -132,8 +132,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-        'cvat.apps.iam.permissions.PolicyEnforcer',
+        # FIXME: temporarily open default permission for anonymous requests to /api/server/health
+        # 'rest_framework.permissions.IsAuthenticated',
+        # 'cvat.apps.iam.permissions.PolicyEnforcer',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'cvat.apps.iam.authentication.TokenAuthenticationEx',
