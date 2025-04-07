@@ -96,6 +96,8 @@ class LambdaGateway:
         # host.docker.internal for Linux will work only with Docker 20.10+
         if os.path.exists('/.dockerenv'): # inside a docker container
             url = f'http://host.docker.internal:{func.port}/invoke'
+        elif func.endpoint:
+            url = f'{func.endpoint}/invoke'
         else:
             url = f'http://localhost:{func.port}/invoke'
 
@@ -104,7 +106,7 @@ class LambdaGateway:
         print(f'🤔 prefix={func.prefix}, url={url}', flush=True)
 
         with make_requests_session() as session:
-            reply = session.post(url, timeout=self.MLSTEAM_API_TIMEOUT, json=payload)
+            reply = session.post(url, timeout=self.MLSTEAM_API_TIMEOUT, json=payload, verify=False)
             reply.raise_for_status()
             response = reply.json()
 
@@ -140,8 +142,9 @@ class LambdaFunction:
         self.state = data['status']['state']
         # description of the function
         self.description = data['spec']['description']
-        # http port to access the serverless function
+        # url or http port to access the serverless function
         self.port = data["status"].get("httpPort")
+        self.endpoint = data['status'].get('endpoint')
         # framework which is used for the function (e.g. tensorflow, openvino)
         self.framework = meta_anno.get('framework')
         # display name for the function
